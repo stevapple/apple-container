@@ -34,10 +34,6 @@ extension RuntimeService {
         return .init()
     }
 
-    func version(request: Runtime_V1_VersionRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_VersionResponse {
-        return .init()
-    }
-
     func runPodSandbox(request: Runtime_V1_RunPodSandboxRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_RunPodSandboxResponse {
         return .init()
     }
