@@ -8,8 +8,7 @@ extension ImageService {
 
         let response = Runtime_V1_RemoveImageResponse()
 
-        let image = try await ClientImage.get(reference: request.image.image)
-        try await image.deleteSnapshot(platform: nil)
+        try await ClientImage.delete(reference: request.image.image)
 
         precondition(response.isInitialized, "Runtime_V1_RemoveImageResponse not initialized")
         return response
