@@ -193,7 +193,6 @@ let package = Package(
             name: "container-cri-shim",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "ContainerizationOCI", package: "containerization"),
                 .product(name: "GRPC", package: "grpc-swift"),
                 .product(name: "Logging", package: "swift-log"),
                 "CVersion",

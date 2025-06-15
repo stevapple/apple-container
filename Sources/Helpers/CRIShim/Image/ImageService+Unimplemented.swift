@@ -1,10 +1,6 @@
 import GRPC
 
 extension ImageService {
-    func imageStatus(request: Runtime_V1_ImageStatusRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_ImageStatusResponse {
-        return .init()
-    }
-    
     func pullImage(request: Runtime_V1_PullImageRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_PullImageResponse {
         return .init()
     }
