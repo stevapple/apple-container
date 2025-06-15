@@ -118,3 +118,28 @@ extension Runtime_V1_FilesystemUsage {
         self.inodesUsed.value = UInt64(inodes.count)
     }
 }
+
+extension ClientImage {
+    static func resolve(image: String) async throws -> ClientImage? {
+        if let match = try #/(?:sha256:)?([0-9a-f]{64})/#.wholeMatch(in: image) {
+            let list = try await ClientImage.list()
+            return list.first(where: { $0.digest == "sha256:\(match.output.1)" })
+        }
+        if let reference = try? Reference.parse(ClientImage.normalizeReference(image)), reference.digest != nil {
+            let list = try await ClientImage.list()
+            return list.first {
+                guard $0.digest == reference.digest else {
+                    return false
+                }
+                guard let imageReference = try? Reference.parse(ClientImage.normalizeReference(image)) else {
+                    return false
+                }
+                return imageReference.name == reference.name
+            }
+        }
+        if let image = try? await ClientImage.get(reference: image) {
+            return image
+        }
+        return nil
+    }
+}
