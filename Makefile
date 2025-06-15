@@ -84,6 +84,7 @@ $(STAGING_DIR):
 	@mkdir -p $(join $(STAGING_DIR), libexec/container/plugins/container-runtime-linux/bin)
 	@mkdir -p $(join $(STAGING_DIR), libexec/container/plugins/container-network-vmnet/bin)
 	@mkdir -p $(join $(STAGING_DIR), libexec/container/plugins/container-core-images/bin)
+	@mkdir -p $(join $(STAGING_DIR), libexec/container/plugins/container-cri-shim/bin)
 
 	@install $(BUILD_BIN_DIR)/container $(join $(STAGING_DIR), bin/container)
 	@install $(BUILD_BIN_DIR)/container-apiserver $(join $(STAGING_DIR), bin/container-apiserver)
@@ -93,6 +94,8 @@ $(STAGING_DIR):
 	@install config/container-network-vmnet-config.json $(join $(STAGING_DIR), libexec/container/plugins/container-network-vmnet/config.json)
 	@install $(BUILD_BIN_DIR)/container-core-images $(join $(STAGING_DIR), libexec/container/plugins/container-core-images/bin/container-core-images)
 	@install config/container-core-images-config.json $(join $(STAGING_DIR), libexec/container/plugins/container-core-images/config.json)
+	@install $(BUILD_BIN_DIR)/container-cri-shim $(join $(STAGING_DIR), libexec/container/plugins/container-cri-shim/bin/container-cri-shim)
+	@install config/container-cri-shim-config.json $(join $(STAGING_DIR), libexec/container/plugins/container-cri-shim/config.json)
 
 	@echo Install uninstaller script
 	@install scripts/uninstall-container.sh $(join $(STAGING_DIR), bin/uninstall-container.sh)
@@ -103,6 +106,7 @@ installer-pkg: $(STAGING_DIR)
 	@codesign $(CODESIGN_OPTS) --identifier com.apple.container.cli $(join $(STAGING_DIR), bin/container)
 	@codesign $(CODESIGN_OPTS) --identifier com.apple.container.apiserver $(join $(STAGING_DIR), bin/container-apiserver)
 	@codesign $(CODESIGN_OPTS) --prefix=com.apple.container. $(join $(STAGING_DIR), libexec/container/plugins/container-core-images/bin/container-core-images)
+	@codesign $(CODESIGN_OPTS) --prefix=com.apple.container. $(join $(STAGING_DIR), libexec/container/plugins/container-cri-shim/bin/container-cri-shim)
 	@codesign $(CODESIGN_OPTS) --prefix=com.apple.container. --entitlements=signing/container-runtime-linux.entitlements $(join $(STAGING_DIR), libexec/container/plugins/container-runtime-linux/bin/container-runtime-linux)
 	@codesign $(CODESIGN_OPTS) --prefix=com.apple.container. --entitlements=signing/container-network-vmnet.entitlements $(join $(STAGING_DIR), libexec/container/plugins/container-network-vmnet/bin/container-network-vmnet)
 
@@ -118,6 +122,7 @@ dsym:
 	@cp -a $(BUILD_BIN_DIR)/container-runtime-linux.dSYM $(DSYM_DIR)
 	@cp -a $(BUILD_BIN_DIR)/container-network-vmnet.dSYM $(DSYM_DIR)
 	@cp -a $(BUILD_BIN_DIR)/container-core-images.dSYM $(DSYM_DIR)
+	@cp -a $(BUILD_BIN_DIR)/container-cri-shim.dSYM $(DSYM_DIR)
 	@cp -a $(BUILD_BIN_DIR)/container-apiserver.dSYM $(DSYM_DIR)
 	@cp -a $(BUILD_BIN_DIR)/container.dSYM $(DSYM_DIR)
 

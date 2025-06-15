@@ -1,0 +1,16 @@
+{
+    "abstract" : "CRI shim service plugin",
+    "version":  "0.1",
+    "author": "Apple",
+    "servicesConfig" : {
+        "loadAtBoot" : true,
+        "runAtLoad" : false,
+        "services" : [
+            {
+                "type" : "auxiliary",
+                "description": "Provide an gRPC interface using Container Runtime Interface (CRI)."
+            }
+        ],
+        "defaultArguments": ["start"]
+    }
+}

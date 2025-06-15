@@ -189,6 +189,17 @@ let package = Package(
             ],
             path: "Sources/Services/ContainerImagesService/Client"
         ),
+        .executableTarget(
+            name: "container-cri-shim",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "GRPC", package: "grpc-swift"),
+                .product(name: "Logging", package: "swift-log"),
+                "CVersion",
+                "ContainerLog",
+            ],
+            path: "Sources/Helpers/CRIShim"
+        ),
         .target(
             name: "ContainerBuild",
             dependencies: [
