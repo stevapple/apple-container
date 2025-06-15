@@ -27,18 +27,17 @@ extension Runtime_V1_Image {
             }
             let platformImage = try await image.config(for: platform)
 
-            if let user = platformImage.config?.user {
+            if let user = platformImage.config?.user, let user = user.split(separator: ":").first {
                 if let uid = Int64(user) {
                     // 5. UID that will run the command(s). This is used as a default if no user is
                     // specified when creating the container. UID and the following user name
                     // are mutually exclusive.
-                    var runtimeUID = Runtime_V1_Int64Value()
-                    runtimeUID.value = uid
-                    self.uid = runtimeUID
+                    self.uid = Runtime_V1_Int64Value()
+                    self.uid.value = uid
                 } else {
                     // 6. User name that will run the command(s). This is used if UID is not set
                     // and no user is specified when creating container.
-                    self.username = user
+                    self.username = String(user)
                 }
                 break
             }
