@@ -43,11 +43,11 @@ extension CRIShimHelper {
         @Flag(name: .long, help: "Enable debug logging")
         var debug = false
 
-        @Option(name: .long, help: "XPC service prefix")
-        var serviceIdentifier: String = "com.apple.container.shim.container-cri-shim"
-
         @Option(name: .shortAndLong, help: "UNIX domain socket path")
-        var socketPath = Self.appRoot.appending(component: "container.sock").path(percentEncoded: false)
+        var socket = Self.appRoot.appending(component: "container.sock").path(percentEncoded: false)
+
+        @Option(name: .shortAndLong, help: "Daemon root directory")
+        var root = Self.appRoot.path
 
         static let appRoot: URL = {
             FileManager.default.urls(
@@ -59,6 +59,8 @@ extension CRIShimHelper {
 
         func run() async throws {
             let commandName = CRIShimHelper._commandName
+            let root = URL(filePath: root)
+
             let log = setupLogger()
             log.info("starting \(commandName)")
             defer {
@@ -70,15 +72,15 @@ extension CRIShimHelper {
                 let grpc = GRPC.Server
                     .insecure(group: .singletonMultiThreadedEventLoopGroup)
                     .withLogger(log)
-                    .withServiceProviders([RuntimeService(), ImageService()])
+                    .withServiceProviders([RuntimeService(), ImageService(root: root)])
 
-                let server = try await grpc.bind(unixDomainSocketPath: socketPath).get()
+                let server = try await grpc.bind(unixDomainSocketPath: socket).get()
+                defer { try? FileManager.default.removeItem(atPath: socket) }
                 log.info("starting gRPC server")
 
                 try await server.onClose.get()
             } catch {
                 log.error("\(commandName) failed", metadata: ["error": "\(error)"])
-                try? FileManager.default.removeItem(atPath: socketPath)
                 CRIShimHelper.exit(withError: error)
             }
         }
