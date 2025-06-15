@@ -6,17 +6,16 @@ import Foundation
 extension Runtime_V1_Image {
     init(from image: ClientImage) async throws {
         // 1. ID of the image.
-        let denormalizedReference = try ClientImage.denormalizeReference(image.reference)
-        let reference = try ContainerizationOCI.Reference.parse(denormalizedReference)
-        self.id = reference.name
+        self.id = image.reference
 
         // 2. Other names by which this image is known.
+        let reference = try Reference.parse(ClientImage.normalizeReference(image.reference))
         if let tag = reference.tag {
-            self.repoTags = [tag]
+            self.repoTags = ["\(reference.name):\(tag)"]
         }
 
         // 3. Digests by which this image is known.
-        self.repoDigests = [image.descriptor.digest]
+        self.repoDigests = ["\(reference.name)@\(image.digest)"]
 
         // 4. Size of the image in bytes. Must be > 0.
         self.size = UInt64(image.descriptor.size)
