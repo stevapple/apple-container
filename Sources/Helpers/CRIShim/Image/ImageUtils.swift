@@ -8,14 +8,19 @@ extension Runtime_V1_Image {
         // 1. ID of the image.
         self.id = image.reference
 
-        // 2. Other names by which this image is known.
-        let reference = try Reference.parse(ClientImage.normalizeReference(image.reference))
-        if let tag = reference.tag {
-            self.repoTags = ["\(reference.name):\(tag)"]
+        // 2+3. Names/Digests by which this image is known.
+        let identicalImages = try await ClientImage.list().filter({ $0.digest == image.digest })
+        let (tags, digests) = try identicalImages.reduce(into: (tags: Set<String>(), digests: Set<String>())) { result, image in
+            let reference = try Reference.parse(ClientImage.normalizeReference(image.reference))
+            if let tag = reference.tag {
+                result.tags.insert("\(reference.name):\(tag)")
+            }
+            result.digests.insert("\(reference.name)@\(image.digest)")
         }
-
+        // 2. Other names by which this image is known.
+        self.repoTags = Array(tags)
         // 3. Digests by which this image is known.
-        self.repoDigests = ["\(reference.name)@\(image.digest)"]
+        self.repoDigests = Array(digests)
 
         // 4. Size of the image in bytes. Must be > 0.
         self.size = UInt64(image.descriptor.size)
