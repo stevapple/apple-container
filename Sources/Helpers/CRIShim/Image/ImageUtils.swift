@@ -49,7 +49,6 @@ extension Runtime_V1_Image {
         }
 
         // 7. ImageSpec for image which includes annotations
-        self.spec = Runtime_V1_ImageSpec()
         self.spec.image = try ClientImage.normalizeReference(image.reference)
         if let annotations = image.descriptor.annotations {
             self.spec.annotations = annotations
@@ -85,7 +84,6 @@ extension Runtime_V1_FilesystemUsage {
             guard mountFileSystemNumber == fileSystemNumber else {
                 continue
             }
-            self.fsID = Runtime_V1_FilesystemIdentifier()
             self.fsID.mountpoint = mountPath
         }
 
@@ -113,13 +111,11 @@ extension Runtime_V1_FilesystemUsage {
         // 3. UsedBytes represents the bytes used for images on the filesystem.
         // This may differ from the total bytes used on the filesystem and may not
         // equal CapacityBytes - AvailableBytes.
-        self.usedBytes = Runtime_V1_UInt64Value()
         self.usedBytes.value = UInt64(bytes)
 
         // 4. InodesUsed represents the inodes used by the images.
         // This may not equal InodesCapacity - InodesAvailable because the underlying
         // filesystem may also be used for purposes other than storing images.
-        self.inodesUsed = Runtime_V1_UInt64Value()
         self.inodesUsed.value = UInt64(inodes.count)
     }
 }
