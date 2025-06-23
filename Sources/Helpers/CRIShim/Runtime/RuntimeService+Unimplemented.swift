@@ -109,11 +109,11 @@ extension RuntimeService {
     func listContainerStats(request: Runtime_V1_ListContainerStatsRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_ListContainerStatsResponse {
         return .init()
     }
-    
+
     func updateRuntimeConfig(request: Runtime_V1_UpdateRuntimeConfigRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_UpdateRuntimeConfigResponse {
         return .init()
     }
-    
+
     func status(request: Runtime_V1_StatusRequest, context: GRPCAsyncServerCallContext) async throws -> Runtime_V1_StatusResponse {
         return .init()
     }
